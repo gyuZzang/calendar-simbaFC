@@ -12,6 +12,8 @@ export const Cell = styled.div<{ isCurrentMonth: boolean; hasSchedule: boolean }
   font-weight: bold;
   height: 100%;
 
+  cursor: pointer;
+
   .chonburi {
     font-family: "Chonburi", serif;
   }

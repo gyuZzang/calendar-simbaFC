@@ -4,7 +4,7 @@ interface DaySchedules {
   [key: string]: Schedule[];
 }
 
-export const schedules: DaySchedules = {
+export const defaultSchedules: DaySchedules = {
   '2025-02-01': [
     {
       time: '14:00',
@@ -39,7 +39,7 @@ export const schedules: DaySchedules = {
       type: 'training'
     }
   ],
-  '2025-02-23': [
+  '2025-02-16': [
     {
       time: '12:00',
       title: '친선 매치',
@@ -47,4 +47,6 @@ export const schedules: DaySchedules = {
       type: 'match'
     }
   ]
-}; 
+};
+
+export type { DaySchedules }; 

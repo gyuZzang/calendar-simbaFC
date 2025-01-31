@@ -10,4 +10,5 @@ export interface DayCellProps {
   hasSchedule: boolean;
   date: Date;
   schedules?: Schedule[];
+  onDateClick?: (date: Date) => void;
 } 

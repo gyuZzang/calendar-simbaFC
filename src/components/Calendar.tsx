@@ -10,7 +10,7 @@ import {
 } from 'date-fns';
 import DayCell from './DayCell/DayCell';
 import CalendarHeader from './CalendarHeader/CalendarHeader';
-import { schedules } from '../data/schedules';
+import { DaySchedules } from '../data/schedules';
 
 const CalendarContainer = styled.div`
   width: 1080px;
@@ -57,9 +57,11 @@ const DayGrid = styled.div`
 
 interface CalendarProps {
   currentDate: Date;
+  schedules: DaySchedules;
+  onDateSelect: (date: Date) => void;
 }
 
-const Calendar = ({ currentDate }: CalendarProps) => {
+const Calendar = ({ currentDate, schedules, onDateSelect }: CalendarProps) => {
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);
   const calendarStart = startOfWeek(monthStart, { weekStartsOn: 0 });
@@ -91,6 +93,7 @@ const Calendar = ({ currentDate }: CalendarProps) => {
                 isCurrentMonth={isSameMonth(day, currentDate)}
                 hasSchedule={!!daySchedules}
                 schedules={daySchedules}
+                onDateClick={onDateSelect}
               />
             );
           })}

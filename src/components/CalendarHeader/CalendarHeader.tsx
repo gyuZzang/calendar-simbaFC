@@ -1,11 +1,9 @@
-import { format } from 'date-fns';
-import { Header, Title, SubTitle, Logo } from './styles';
+import { format } from "date-fns";
+import { Header, Title, SubTitle, Logo } from "./styles";
+import { useCurrentDate } from "../../contexts/CurrentDateContext";
 
-interface CalendarHeaderProps {
-  currentDate: Date;
-}
-
-const CalendarHeader = ({ currentDate }: CalendarHeaderProps) => {
+const CalendarHeader = () => {
+  const { currentDate } = useCurrentDate();
   return (
     <Header>
       <Title>

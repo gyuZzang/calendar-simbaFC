@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { format } from 'date-fns';
+import { useState } from "react";
+import { format } from "date-fns";
 import {
   FormContainer,
   FormTitle,
@@ -8,44 +8,44 @@ import {
   Label,
   Input,
   Select,
-  SubmitButton
-} from './styles';
+  SubmitButton,
+} from "./styles";
+import { useCurrentDate } from "../../contexts/CurrentDateContext";
+import { useSchedules } from "../../contexts/SchedulesContext";
 
-interface ScheduleFormProps {
-  currentDate: Date;
-  onAddSchedule: (date: string, schedule: {
-    time: string;
-    title: string;
-    description?: string;
-    type: 'training' | 'match';
-  }) => void;
-}
-
-const ScheduleForm = ({ currentDate, onAddSchedule }: ScheduleFormProps) => {
-  const [selectedDay, setSelectedDay] = useState('1');
-  const [time, setTime] = useState('14:00');
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [type, setType] = useState<'training' | 'match'>('training');
+const ScheduleForm = () => {
+  const { currentDate } = useCurrentDate();
+  const { addSchedule } = useSchedules();
+  const [selectedDay, setSelectedDay] = useState("1");
+  const [time, setTime] = useState("14:00");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [type, setType] = useState<"training" | "match">("training");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const dateStr = format(
-      new Date(currentDate.getFullYear(), currentDate.getMonth(), parseInt(selectedDay)),
-      'yyyy-MM-dd'
+      new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        parseInt(selectedDay)
+      ),
+      "yyyy-MM-dd"
     );
 
-    onAddSchedule(dateStr, {
+    addSchedule(dateStr, {
       time,
       title,
       description: description || undefined,
-      type
+      type,
+      month: format(currentDate, "yyyy-MM"),
+      date: dateStr,
     });
 
     // Reset form
-    setTitle('');
-    setDescription('');
+    setTitle("");
+    setDescription("");
   };
 
   // 현재 월의 날짜 옵션 생성
@@ -61,12 +61,14 @@ const ScheduleForm = ({ currentDate, onAddSchedule }: ScheduleFormProps) => {
       <Form onSubmit={handleSubmit}>
         <FormGroup>
           <Label>Day</Label>
-          <Select 
+          <Select
             value={selectedDay}
             onChange={(e) => setSelectedDay(e.target.value)}
           >
-            {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(day => (
-              <option key={day} value={day}>{day}</option>
+            {Array.from({ length: daysInMonth }, (_, i) => i + 1).map((day) => (
+              <option key={day} value={day}>
+                {day}
+              </option>
             ))}
           </Select>
         </FormGroup>
@@ -82,7 +84,7 @@ const ScheduleForm = ({ currentDate, onAddSchedule }: ScheduleFormProps) => {
           <Label>Type</Label>
           <Select
             value={type}
-            onChange={(e) => setType(e.target.value as 'training' | 'match')}
+            onChange={(e) => setType(e.target.value as "training" | "match")}
           >
             <option value="training">Training</option>
             <option value="match">Match</option>
@@ -111,4 +113,4 @@ const ScheduleForm = ({ currentDate, onAddSchedule }: ScheduleFormProps) => {
   );
 };
 
-export default ScheduleForm; 
+export default ScheduleForm;

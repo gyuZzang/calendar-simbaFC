@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 import {
   startOfMonth,
   endOfMonth,
@@ -8,9 +8,10 @@ import {
   format,
   isSameMonth,
 } from 'date-fns';
-import DayCell from './DayCell/DayCell';
-import CalendarHeader from './CalendarHeader/CalendarHeader';
-import { DaySchedules } from '../data/schedules';
+import DayCell from "./DayCell/DayCell";
+import CalendarHeader from "./CalendarHeader/CalendarHeader";
+import { useCurrentDate } from "./../contexts/CurrentDateContext";
+import { useSchedules } from "./../contexts/SchedulesContext";
 
 const CalendarContainer = styled.div`
   width: 1080px;
@@ -54,14 +55,9 @@ const DayGrid = styled.div`
   flex: 1;
 `;
 
-
-interface CalendarProps {
-  currentDate: Date;
-  schedules: DaySchedules;
-  onDateSelect: (date: Date) => void;
-}
-
-const Calendar = ({ currentDate, schedules, onDateSelect }: CalendarProps) => {
+const Calendar = () => {
+  const { currentDate, setCurrentDate } = useCurrentDate();
+  const { schedules } = useSchedules();
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);
   const calendarStart = startOfWeek(monthStart, { weekStartsOn: 0 });
@@ -74,7 +70,7 @@ const Calendar = ({ currentDate, schedules, onDateSelect }: CalendarProps) => {
 
   return (
     <CalendarContainer>
-      <CalendarHeader currentDate={currentDate} />
+      <CalendarHeader />
       <CalendarGrid>
         <WeekdayHeader>
           {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
@@ -93,7 +89,7 @@ const Calendar = ({ currentDate, schedules, onDateSelect }: CalendarProps) => {
                 isCurrentMonth={isSameMonth(day, currentDate)}
                 hasSchedule={!!daySchedules}
                 schedules={daySchedules}
-                onDateClick={onDateSelect}
+                onDateClick={setCurrentDate}
               />
             );
           })}

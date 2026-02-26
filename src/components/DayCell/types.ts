@@ -2,7 +2,9 @@ export interface Schedule {
   time: string;
   title: string;
   description?: string;
-  type: 'training' | 'match';
+  type: "training" | "match";
+  month: string;
+  date: string;
 }
 
 export interface DayCellProps {
@@ -11,4 +13,4 @@ export interface DayCellProps {
   date: Date;
   schedules?: Schedule[];
   onDateClick?: (date: Date) => void;
-} 
+}

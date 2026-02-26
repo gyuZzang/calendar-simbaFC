@@ -1,7 +1,8 @@
-import { useCallback } from 'react';
-import { setMonth, format } from 'date-fns';
-import html2canvas from 'html2canvas';
-import { SelectorContainer, Select, SaveButton } from './styles';
+import { useCallback, type FC } from "react";
+import { setMonth, format } from "date-fns";
+import html2canvas from "html2canvas";
+import { SelectorContainer, Select, SaveButton } from "./styles";
+import { useCurrentDate } from "../../contexts/CurrentDateContext";
 
 const months = [
   "January", "February", "March", "April",
@@ -9,12 +10,8 @@ const months = [
   "September", "October", "November", "December"
 ];
 
-interface MonthSelectorProps {
-  currentDate: Date;
-  setCurrentDate: (date: Date) => void;
-}
-
-const MonthSelector = ({ currentDate, setCurrentDate }: MonthSelectorProps) => {
+const MonthSelector: FC = () => {
+  const { currentDate, setCurrentDate } = useCurrentDate();
   const handleMonthChange = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
     const newMonth = parseInt(event.target.value);
     setCurrentDate(setMonth(currentDate, newMonth));

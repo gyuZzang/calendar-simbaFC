@@ -1,41 +1,20 @@
-import { Container, CalendarSection, SideSection } from './styles';
-import Calendar from '../Calendar';
-import MonthSelector from '../MonthSelector/MonthSelector';
-import { DaySchedules } from '../../data/schedules';
-import { Schedule } from '../DayCell/types';
-import ScheduleEditor from '../ScheduleEditor/ScheduleEditor';
+import { Container, CalendarSection, SideSection } from "./styles";
+import Calendar from "../Calendar";
+import MonthSelector from "../MonthSelector/MonthSelector";
+import ScheduleEditor from "../ScheduleEditor/ScheduleEditor";
 
-interface LayoutProps {
-  currentDate: Date;
-  setCurrentDate: (date: Date) => void;
-  schedules: DaySchedules;
-  onAddSchedule: (date: string, schedule: Schedule) => void;
-  onUpdateSchedule: (date: string, index: number, schedule: Schedule) => void;
-  onDeleteSchedule: (date: string, index: number) => void;
-}
-
-const Layout = ({ currentDate, setCurrentDate, schedules, onAddSchedule, onUpdateSchedule, onDeleteSchedule }: LayoutProps) => {
+const Layout = () => {
   return (
     <Container>
       <CalendarSection className="calendar-section">
-        <Calendar 
-          currentDate={currentDate} 
-          schedules={schedules}
-          onDateSelect={setCurrentDate}
-        />
+        <Calendar />
       </CalendarSection>
       <SideSection>
-        <MonthSelector currentDate={currentDate} setCurrentDate={setCurrentDate} />
-        <ScheduleEditor 
-          currentDate={currentDate} 
-          schedules={schedules} 
-          onUpdateSchedule={onUpdateSchedule}
-          onAddSchedule={onAddSchedule}
-          onDeleteSchedule={onDeleteSchedule}
-        />
+        <MonthSelector />
+        <ScheduleEditor />
       </SideSection>
     </Container>
   );
 };
 
-export default Layout; 
+export default Layout;

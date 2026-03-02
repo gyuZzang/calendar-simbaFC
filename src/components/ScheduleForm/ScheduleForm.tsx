@@ -35,6 +35,7 @@ const ScheduleForm = () => {
     );
 
     addSchedule(dateStr, {
+      id: crypto.randomUUID(),
       time,
       title,
       description: description || undefined,

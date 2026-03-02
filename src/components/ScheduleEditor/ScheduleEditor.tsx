@@ -43,6 +43,7 @@ const ScheduleEditor: FC = () => {
   const handleAdd = () => {
     setIsAdding(true);
     setEditingSchedule({
+      id: crypto.randomUUID(),
       time: "12:00",
       title: "",
       type: "training",
@@ -57,8 +58,8 @@ const ScheduleEditor: FC = () => {
     if (isAdding) {
       addSchedule(currentDateStr, editingSchedule);
       setIsAdding(false);
-    } else if (editingIndex !== null) {
-      updateSchedule(currentDateStr, editingIndex, editingSchedule);
+    } else if (editingIndex !== null && editingSchedule.id) {
+      updateSchedule(currentDateStr, editingSchedule.id, editingSchedule);
       setEditingIndex(null);
     }
     setEditingSchedule(null);
@@ -78,7 +79,7 @@ const ScheduleEditor: FC = () => {
       <ScheduleList>
         {daySchedules.length > 0
           ? daySchedules.map((schedule, index) => (
-              <ScheduleItem key={index}>
+              <ScheduleItem key={schedule.id ?? index}>
                 {editingIndex === index ? (
                   <EditForm>
                     <Input
@@ -148,7 +149,7 @@ const ScheduleEditor: FC = () => {
                       </IconButton>
                       <IconButton
                         danger
-                        onClick={() => deleteSchedule(currentDateStr, index)}
+                        onClick={() => schedule.id && deleteSchedule(currentDateStr, schedule.id)}
                       >
                         <FiTrash2 size={18} />
                       </IconButton>

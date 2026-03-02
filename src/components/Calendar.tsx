@@ -7,7 +7,7 @@ import {
   eachDayOfInterval,
   format,
   isSameMonth,
-} from 'date-fns';
+} from "date-fns";
 import DayCell from "./DayCell/DayCell";
 import CalendarHeader from "./CalendarHeader/CalendarHeader";
 import { useCurrentDate } from "./../contexts/CurrentDateContext";
@@ -43,7 +43,7 @@ const WeekdayCell = styled.div`
   text-align: center;
   padding: 10px;
   font-size: 24px;
-  color: #002B5B;
+  color: #002b5b;
   font-weight: bold;
 `;
 
@@ -73,21 +73,21 @@ const Calendar = () => {
       <CalendarHeader />
       <CalendarGrid>
         <WeekdayHeader>
-          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
+          {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
             <WeekdayCell key={day}>{day}</WeekdayCell>
           ))}
         </WeekdayHeader>
         <DayGrid>
           {calendarDays.map((day) => {
-            const dateStr = format(day, 'yyyy-MM-dd');
+            const dateStr = format(day, "yyyy-MM-dd");
             const daySchedules = schedules[dateStr];
-            
+
             return (
               <DayCell
                 key={day.toString()}
                 date={day}
                 isCurrentMonth={isSameMonth(day, currentDate)}
-                hasSchedule={!!daySchedules}
+                hasSchedule={daySchedules?.length > 0}
                 schedules={daySchedules}
                 onDateClick={setCurrentDate}
               />
@@ -99,4 +99,4 @@ const Calendar = () => {
   );
 };
 
-export default Calendar; 
+export default Calendar;

@@ -7,12 +7,18 @@ import {
 } from "react";
 import { DaySchedules } from "../data/schedules";
 import { Schedule } from "../components/DayCell/types";
+import {
+  useAddSchedule,
+  useSchedules as useDefaultSchedules,
+  useDeleteSchedule,
+  useUpdateSchedule,
+} from "../hooks/useSchedules";
 
 interface SchedulesContextValue {
   schedules: DaySchedules;
   addSchedule: (date: string, schedule: Schedule) => void;
-  updateSchedule: (date: string, index: number, schedule: Schedule) => void;
-  deleteSchedule: (date: string, index: number) => void;
+  updateSchedule: (date: string, id: string, schedule: Schedule) => void;
+  deleteSchedule: (date: string, id: string) => void;
 }
 
 const SchedulesContext = createContext<SchedulesContextValue | undefined>(
@@ -23,35 +29,49 @@ interface SchedulesProviderProps {
   children: ReactNode;
 }
 
+const parseSchedules = (schedules: Schedule[]): DaySchedules => {
+  return schedules.reduce((acc: DaySchedules, schedule) => {
+    acc[schedule.date] = [...(acc[schedule.date] || []), schedule];
+    return acc;
+  }, {});
+};
+
 export const SchedulesProvider = ({ children }: SchedulesProviderProps) => {
-  const [schedules, setSchedules] = useState<DaySchedules>(() => {
-    const saved = localStorage.getItem("schedules");
-    return saved ? (JSON.parse(saved) as DaySchedules) : {};
-  });
+  const { schedules: defaultSchedules } = useDefaultSchedules();
+
+  const [schedules, setSchedules] = useState<DaySchedules>({});
+  const { addSchedule: addScheduleDB } = useAddSchedule();
+  const { updateSchedule: updateScheduleDB } = useUpdateSchedule();
+  const { deleteSchedule: deleteScheduleDB } = useDeleteSchedule();
 
   useEffect(() => {
-    localStorage.setItem("schedules", JSON.stringify(schedules));
-  }, [schedules]);
+    if (defaultSchedules?.length > 0) {
+      setSchedules(parseSchedules(defaultSchedules));
+    }
+  }, [defaultSchedules]);
 
   const addSchedule = (date: string, schedule: Schedule) => {
     setSchedules((prev) => ({
       ...prev,
       [date]: [...(prev[date] || []), schedule],
     }));
+    addScheduleDB(schedule);
   };
 
-  const updateSchedule = (date: string, index: number, schedule: Schedule) => {
+  const updateSchedule = (date: string, id: string, schedule: Schedule) => {
     setSchedules((prev) => ({
       ...prev,
-      [date]: prev[date].map((item, i) => (i === index ? schedule : item)),
+      [date]: prev[date].map((item) => (item.id === id ? schedule : item)),
     }));
+    updateScheduleDB(id, schedule);
   };
 
-  const deleteSchedule = (date: string, index: number) => {
+  const deleteSchedule = (date: string, id: string) => {
     setSchedules((prev) => ({
       ...prev,
-      [date]: prev[date].filter((_, i) => i !== index),
+      [date]: prev[date].filter((item) => item.id !== id),
     }));
+    deleteScheduleDB(id);
   };
 
   return (

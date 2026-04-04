@@ -3,7 +3,7 @@ export interface Schedule {
   time: string;
   title: string;
   description?: string;
-  type: "training" | "match";
+  type: "training" | "match" | "birthday";
   month: string;
   date: string;
 }

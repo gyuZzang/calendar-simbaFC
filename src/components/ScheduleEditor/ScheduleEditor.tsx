@@ -82,62 +82,77 @@ const ScheduleEditor: FC = () => {
               <ScheduleItem key={schedule.id ?? index}>
                 {editingIndex === index ? (
                   <EditForm>
-                    <Input
-                      type="time"
-                      value={editingSchedule?.time}
-                      onChange={(e) =>
-                        setEditingSchedule((prev) =>
-                          prev ? { ...prev, time: e.target.value } : prev
-                        )
-                      }
-                    />
                     <Select
                       value={editingSchedule?.type}
-                      onChange={(e) =>
-                        setEditingSchedule((prev) =>
-                          prev
-                            ? {
-                                ...prev,
-                                type: e.target.value as "training" | "match",
-                              }
-                            : prev
-                        )
-                      }
+                      onChange={(e) => {
+                        const next = e.target.value as
+                          | "training"
+                          | "match"
+                          | "birthday";
+                        setEditingSchedule((prev) => {
+                          if (!prev) return prev;
+                          if (next === "birthday") {
+                            return { ...prev, type: next, time: "" };
+                          }
+                          return {
+                            ...prev,
+                            type: next,
+                            time:
+                              prev.type === "birthday" && !prev.time
+                                ? "12:00"
+                                : prev.time,
+                          };
+                        });
+                      }}
                     >
-                      <option value="training">Training</option>
-                      <option value="match">Match</option>
-                    </Select>
-                    <Input
-                      value={editingSchedule?.title}
-                      onChange={(e) =>
-                        setEditingSchedule((prev) =>
-                          prev ? { ...prev, title: e.target.value } : prev
-                        )
-                      }
-                      placeholder="Schedule title"
-                    />
-                    <Input
-                      value={editingSchedule?.description || ""}
-                      onChange={(e) =>
-                        setEditingSchedule((prev) =>
-                          prev ? { ...prev, description: e.target.value } : prev
-                        )
-                      }
-                      placeholder="Description (optional)"
-                    />
-                    <ButtonGroup>
-                      <IconButton onClick={handleCancel}>
-                        <FiX size={18} />
-                      </IconButton>
-                      <IconButton success onClick={handleSave}>
-                        <FiCheck size={18} />
-                      </IconButton>
-                    </ButtonGroup>
-                  </EditForm>
-                ) : (
+                    <option value="training">Training</option>
+                    <option value="match">Match</option>
+                    <option value="birthday">생일</option>
+                  </Select>
+                    {editingSchedule?.type !== "birthday" && (
+                      <Input
+                        type="time"
+                        value={editingSchedule?.time ?? ""}
+                        onChange={(e) =>
+                          setEditingSchedule((prev) =>
+                            prev ? { ...prev, time: e.target.value } : prev
+                          )
+                        }
+                      />
+                    )}
+                  <Input
+                    value={editingSchedule?.title}
+                    onChange={(e) =>
+                      setEditingSchedule((prev) =>
+                        prev ? { ...prev, title: e.target.value } : prev
+                      )
+                    }
+                    placeholder="Schedule title"
+                  />
+                  <Input
+                    value={editingSchedule?.description || ""}
+                    onChange={(e) =>
+                      setEditingSchedule((prev) =>
+                        prev ? { ...prev, description: e.target.value } : prev
+                      )
+                    }
+                    placeholder="Description (optional)"
+                  />
+                  <ButtonGroup>
+                    <IconButton onClick={handleCancel}>
+                      <FiX size={18} />
+                    </IconButton>
+                    <IconButton success onClick={handleSave}>
+                      <FiCheck size={18} />
+                    </IconButton>
+                  </ButtonGroup>
+                </EditForm>
+              ) : (
                   <>
                     <ScheduleContent>
-                      <Time>{schedule.time}</Time>
+                      {schedule.type !== "birthday" && (
+                        <Time>{schedule.time}</Time>
+                      )}
                       <Title>{schedule.title}</Title>
                       {schedule.description && (
                         <Description>{schedule.description}</Description>
@@ -162,31 +177,44 @@ const ScheduleEditor: FC = () => {
         {isAdding ? (
           <ScheduleItem>
             <EditForm>
-              <Input
-                type="time"
-                value={editingSchedule?.time}
-                onChange={(e) =>
-                  setEditingSchedule((prev) =>
-                    prev ? { ...prev, time: e.target.value } : prev
-                  )
-                }
-              />
               <Select
                 value={editingSchedule?.type}
-                onChange={(e) =>
-                  setEditingSchedule((prev) =>
-                    prev
-                      ? {
-                          ...prev,
-                          type: e.target.value as "training" | "match",
-                        }
-                      : prev
-                  )
-                }
+                onChange={(e) => {
+                  const next = e.target.value as
+                    | "training"
+                    | "match"
+                    | "birthday";
+                  setEditingSchedule((prev) => {
+                    if (!prev) return prev;
+                    if (next === "birthday") {
+                      return { ...prev, type: next, time: "" };
+                    }
+                    return {
+                      ...prev,
+                      type: next,
+                      time:
+                        prev.type === "birthday" && !prev.time
+                          ? "12:00"
+                          : prev.time,
+                    };
+                  });
+                }}
               >
                 <option value="training">Training</option>
                 <option value="match">Match</option>
+                <option value="birthday">생일</option>
               </Select>
+              {editingSchedule?.type !== "birthday" && (
+                <Input
+                  type="time"
+                  value={editingSchedule?.time ?? ""}
+                  onChange={(e) =>
+                    setEditingSchedule((prev) =>
+                      prev ? { ...prev, time: e.target.value } : prev
+                    )
+                  }
+                />
+              )}
               <Input
                 value={editingSchedule?.title}
                 onChange={(e) =>

@@ -12,8 +12,12 @@ const DayCell = ({ date, isCurrentMonth, hasSchedule, schedules, onDateClick }: 
       <span className="chonburi">{format(date, 'd')}</span>
       {schedules?.map((schedule, index) => (
         <ScheduleItem key={index}>
-          <Time>{schedule.time}</Time>
-          <ScheduleTitle>{schedule.title}</ScheduleTitle>
+          {schedule.type !== 'birthday' && (
+            <Time>{schedule.time}</Time>
+          )}
+          <ScheduleTitle $isBirthday={schedule.type === "birthday"}>
+            {schedule.title}
+          </ScheduleTitle>
           {schedule.description && (
             <ScheduleDescription>{schedule.description}</ScheduleDescription>
           )}

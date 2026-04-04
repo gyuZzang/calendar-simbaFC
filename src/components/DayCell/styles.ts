@@ -30,9 +30,9 @@ export const Time = styled.span`
   font-weight: 500;
 `;
 
-export const ScheduleTitle = styled.span`
+export const ScheduleTitle = styled.span<{ $isBirthday?: boolean }>`
   font-weight: 600;
-  color: white;
+  color: ${(props) => (props.$isBirthday ? "#FFF9C4" : "white")};
   margin-left: 4px;
 `;
 

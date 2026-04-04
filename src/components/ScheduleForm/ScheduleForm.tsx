@@ -20,7 +20,9 @@ const ScheduleForm = () => {
   const [time, setTime] = useState("14:00");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [type, setType] = useState<"training" | "match">("training");
+  const [type, setType] = useState<"training" | "match" | "birthday">(
+    "training"
+  );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,7 +38,7 @@ const ScheduleForm = () => {
 
     addSchedule(dateStr, {
       id: crypto.randomUUID(),
-      time,
+      time: type === "birthday" ? "" : time,
       title,
       description: description || undefined,
       type,
@@ -74,23 +76,34 @@ const ScheduleForm = () => {
           </Select>
         </FormGroup>
         <FormGroup>
-          <Label>Time</Label>
-          <Input
-            type="time"
-            value={time}
-            onChange={(e) => setTime(e.target.value)}
-          />
-        </FormGroup>
-        <FormGroup>
           <Label>Type</Label>
           <Select
             value={type}
-            onChange={(e) => setType(e.target.value as "training" | "match")}
+            onChange={(e) => {
+              const next = e.target.value as
+                | "training"
+                | "match"
+                | "birthday";
+              setType(next);
+              if (next === "birthday") setTime("");
+              else if (type === "birthday") setTime("12:00");
+            }}
           >
             <option value="training">Training</option>
             <option value="match">Match</option>
+            <option value="birthday">생일</option>
           </Select>
         </FormGroup>
+        {type !== "birthday" && (
+          <FormGroup>
+            <Label>Time</Label>
+            <Input
+              type="time"
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
+            />
+          </FormGroup>
+        )}
         <FormGroup>
           <Label>Title</Label>
           <Input

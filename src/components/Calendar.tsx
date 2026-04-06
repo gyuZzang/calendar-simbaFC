@@ -80,14 +80,18 @@ const Calendar = () => {
         <DayGrid>
           {calendarDays.map((day) => {
             const dateStr = format(day, "yyyy-MM-dd");
+            // 생일만 있으면 스케줄 없다고 침
             const daySchedules = schedules[dateStr];
+            const hasOnlyBirthday = daySchedules?.every(
+              (schedule) => schedule.type === "birthday",
+            );
 
             return (
               <DayCell
                 key={day.toString()}
                 date={day}
                 isCurrentMonth={isSameMonth(day, currentDate)}
-                hasSchedule={daySchedules?.length > 0}
+                hasSchedule={daySchedules?.length > 0 && !hasOnlyBirthday}
                 schedules={daySchedules}
                 onDateClick={setCurrentDate}
               />

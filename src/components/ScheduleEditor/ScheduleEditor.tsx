@@ -1,6 +1,6 @@
 import { useState, type FC } from "react";
 import { format } from "date-fns";
-import { Schedule } from "../DayCell/types";
+import { Schedule, ScheduleType } from "../DayCell/types";
 import {
   EditorContainer,
   DateTitle,
@@ -24,6 +24,31 @@ import { FiEdit2, FiTrash2, FiPlus, FiCheck, FiX } from "react-icons/fi";
 import { useCurrentDate } from "../../contexts/CurrentDateContext";
 import { useSchedules } from "../../contexts/SchedulesContext";
 
+const scheduleTypes: Record<
+  ScheduleType,
+  {
+    label: string;
+    placeholder: { title: string; time?: string; description?: string };
+  }
+> = {
+  training: {
+    label: "훈련",
+    placeholder: { title: "정기 훈련", time: "14:00" },
+  },
+  match: {
+    label: "매치",
+    placeholder: { title: "친선 매치", time: "14:00", description: "w/ " },
+  },
+  birthday: {
+    label: "생일",
+    placeholder: { title: "생일 🎂", description: "" },
+  },
+  other: {
+    label: "기타",
+    placeholder: { title: "", time: "14:00" },
+  },
+} as const;
+
 const ScheduleEditor: FC = () => {
   const { currentDate } = useCurrentDate();
   const { schedules, addSchedule, updateSchedule, deleteSchedule } =
@@ -44,8 +69,8 @@ const ScheduleEditor: FC = () => {
     setIsAdding(true);
     setEditingSchedule({
       id: crypto.randomUUID(),
-      time: "12:00",
-      title: "",
+      time: "14:00",
+      title: "정기 훈련",
       type: "training",
       month: format(currentDate, "yyyy-MM"),
       date: currentDateStr,
@@ -85,69 +110,64 @@ const ScheduleEditor: FC = () => {
                     <Select
                       value={editingSchedule?.type}
                       onChange={(e) => {
-                        const next = e.target.value as
-                          | "training"
-                          | "match"
-                          | "birthday";
+                        const nextType = e.target.value as ScheduleType;
                         setEditingSchedule((prev) => {
                           if (!prev) return prev;
-                          if (next === "birthday") {
-                            return { ...prev, type: next, time: "" };
-                          }
                           return {
                             ...prev,
-                            type: next,
-                            time:
-                              prev.type === "birthday" && !prev.time
-                                ? "12:00"
-                                : prev.time,
+                            type: nextType,
+                            ...scheduleTypes[nextType].placeholder,
                           };
                         });
                       }}
                     >
-                    <option value="training">Training</option>
-                    <option value="match">Match</option>
-                    <option value="birthday">생일</option>
-                  </Select>
+                      {Object.keys(scheduleTypes).map((type) => (
+                        <option key={type} value={type}>
+                          {scheduleTypes[type as ScheduleType].label}
+                        </option>
+                      ))}
+                    </Select>
                     {editingSchedule?.type !== "birthday" && (
                       <Input
                         type="time"
                         value={editingSchedule?.time ?? ""}
                         onChange={(e) =>
                           setEditingSchedule((prev) =>
-                            prev ? { ...prev, time: e.target.value } : prev
+                            prev ? { ...prev, time: e.target.value } : prev,
                           )
                         }
                       />
                     )}
-                  <Input
-                    value={editingSchedule?.title}
-                    onChange={(e) =>
-                      setEditingSchedule((prev) =>
-                        prev ? { ...prev, title: e.target.value } : prev
-                      )
-                    }
-                    placeholder="Schedule title"
-                  />
-                  <Input
-                    value={editingSchedule?.description || ""}
-                    onChange={(e) =>
-                      setEditingSchedule((prev) =>
-                        prev ? { ...prev, description: e.target.value } : prev
-                      )
-                    }
-                    placeholder="Description (optional)"
-                  />
-                  <ButtonGroup>
-                    <IconButton onClick={handleCancel}>
-                      <FiX size={18} />
-                    </IconButton>
-                    <IconButton success onClick={handleSave}>
-                      <FiCheck size={18} />
-                    </IconButton>
-                  </ButtonGroup>
-                </EditForm>
-              ) : (
+                    <Input
+                      value={editingSchedule?.title}
+                      onChange={(e) =>
+                        setEditingSchedule((prev) =>
+                          prev ? { ...prev, title: e.target.value } : prev,
+                        )
+                      }
+                      placeholder="Schedule title"
+                    />
+                    <Input
+                      value={editingSchedule?.description || ""}
+                      onChange={(e) =>
+                        setEditingSchedule((prev) =>
+                          prev
+                            ? { ...prev, description: e.target.value }
+                            : prev,
+                        )
+                      }
+                      placeholder="Description (optional)"
+                    />
+                    <ButtonGroup>
+                      <IconButton onClick={handleCancel}>
+                        <FiX size={18} />
+                      </IconButton>
+                      <IconButton success onClick={handleSave}>
+                        <FiCheck size={18} />
+                      </IconButton>
+                    </ButtonGroup>
+                  </EditForm>
+                ) : (
                   <>
                     <ScheduleContent>
                       {schedule.type !== "birthday" && (
@@ -164,7 +184,10 @@ const ScheduleEditor: FC = () => {
                       </IconButton>
                       <IconButton
                         danger
-                        onClick={() => schedule.id && deleteSchedule(currentDateStr, schedule.id)}
+                        onClick={() =>
+                          schedule.id &&
+                          deleteSchedule(currentDateStr, schedule.id)
+                        }
                       >
                         <FiTrash2 size={18} />
                       </IconButton>
@@ -210,7 +233,7 @@ const ScheduleEditor: FC = () => {
                   value={editingSchedule?.time ?? ""}
                   onChange={(e) =>
                     setEditingSchedule((prev) =>
-                      prev ? { ...prev, time: e.target.value } : prev
+                      prev ? { ...prev, time: e.target.value } : prev,
                     )
                   }
                 />
@@ -219,7 +242,7 @@ const ScheduleEditor: FC = () => {
                 value={editingSchedule?.title}
                 onChange={(e) =>
                   setEditingSchedule((prev) =>
-                    prev ? { ...prev, title: e.target.value } : prev
+                    prev ? { ...prev, title: e.target.value } : prev,
                   )
                 }
                 placeholder="Schedule title"
@@ -228,7 +251,7 @@ const ScheduleEditor: FC = () => {
                 value={editingSchedule?.description || ""}
                 onChange={(e) =>
                   setEditingSchedule((prev) =>
-                    prev ? { ...prev, description: e.target.value } : prev
+                    prev ? { ...prev, description: e.target.value } : prev,
                   )
                 }
                 placeholder="Description (optional)"

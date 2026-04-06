@@ -1,12 +1,16 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
-export const Cell = styled.div<{ isCurrentMonth: boolean; hasSchedule: boolean }>`
+export const Cell = styled.div<{
+  isCurrentMonth: boolean;
+  hasSchedule: boolean;
+}>`
   padding: 12px;
   border-radius: 24px;
-  background-color: ${props => props.hasSchedule ? '#002B5B' : 'transparent'};
-  color: ${props => {
-    if (!props.isCurrentMonth) return '#ccc';
-    return props.hasSchedule ? '#fff' : '#002B5B';
+  background-color: ${(props) =>
+    props.hasSchedule ? "#002B5B" : "transparent"};
+  color: ${(props) => {
+    if (!props.isCurrentMonth) return "#ccc";
+    return props.hasSchedule ? "#fff" : "#002B5B";
   }};
   font-size: 24px;
   font-weight: bold;
@@ -26,14 +30,14 @@ export const ScheduleItem = styled.div`
 `;
 
 export const Time = styled.span`
-  color: #FFD700;
+  color: #ffd700;
   font-weight: 500;
 `;
 
 export const ScheduleTitle = styled.span<{ $isBirthday?: boolean }>`
   font-weight: 600;
-  color: ${(props) => (props.$isBirthday ? "#FFF9C4" : "white")};
-  margin-left: 4px;
+  color: ${(props) => (props.$isBirthday ? "#FF9800" : "white")};
+  margin-left: ${(props) => (props.$isBirthday ? "0" : "4px")};
 `;
 
 export const ScheduleDescription = styled.div`
@@ -41,4 +45,4 @@ export const ScheduleDescription = styled.div`
   color: #8899aa;
   margin-top: 2px;
   margin-left: 32px;
-`; 
+`;

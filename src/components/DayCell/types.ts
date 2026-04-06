@@ -3,10 +3,12 @@ export interface Schedule {
   time: string;
   title: string;
   description?: string;
-  type: "training" | "match" | "birthday";
+  type: ScheduleType;
   month: string;
   date: string;
 }
+
+export type ScheduleType = "training" | "match" | "birthday" | "other";
 
 export interface DayCellProps {
   isCurrentMonth: boolean;
